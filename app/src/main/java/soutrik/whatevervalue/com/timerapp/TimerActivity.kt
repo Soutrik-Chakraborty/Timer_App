@@ -4,11 +4,14 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.annotation.RequiresApi
+import soutrik.whatevervalue.com.timerapp.util.NotificationUtil
 import soutrik.whatevervalue.com.timerapp.util.PrefUtil
 import kotlinx.android.synthetic.main.activity_timer.*
 import kotlinx.android.synthetic.main.content_timer.*
@@ -17,6 +20,7 @@ import java.util.*
 class TimerActivity : AppCompatActivity() {
 
     companion object {
+        @RequiresApi(Build.VERSION_CODES.KITKAT)
         fun setAlarm(context: Context, nowSeconds: Long, secondsRemaining: Long): Long{
             val wakeUpTime = (nowSeconds + secondsRemaining) * 1000
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -80,19 +84,20 @@ class TimerActivity : AppCompatActivity() {
         initTimer()
 
         removeAlarm(this)
-        //TODO: hide notification
+        NotificationUtil.hideTimerNotification(this)
     }
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onPause() {
         super.onPause()
 
         if (timerState == TimerState.Running){
             timer.cancel()
             val wakeUpTime = setAlarm(this, nowSeconds, secondsRemaining)
-            //TODO: show notification
+            NotificationUtil.showTimerRunning(this, wakeUpTime)
         }
         else if (timerState == TimerState.Paused){
-            //TODO: show notification
+            NotificationUtil.showTimerPaused(this)
         }
 
         PrefUtil.setPreviousTimerLengthSeconds(timerLengthSeconds, this)
