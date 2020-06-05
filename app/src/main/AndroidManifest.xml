@@ -37,6 +37,15 @@
                  <action android:name="start" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".SettingsActivity"
+            android:parentActivityName=".TimerActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TimerActivity" />
+        </activity>
     </application>
 
 </manifest>
